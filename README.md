@@ -2,14 +2,14 @@
 
 ## Introduction
 
-This script is example of RES API call way to import SSL Certificate for Prism Element/Prism Central web interface.
+This script is example of REST API call way to import SSL Certificate for Prism Element/Prism Central web interface.
 
 ## Requirements
-
+```
 Python 3
 requests
 urllib3
-
+```
 ## How to use
 
 To import certificate please use following format
