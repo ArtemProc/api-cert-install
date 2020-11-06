@@ -18,12 +18,14 @@ To import certificate please use following format
 
 Type format names are:
 
+```
 RSA_2048
 ECDSA_256
 ECDSA_384
 ECDSA_521
+```
 
-##To DO
+## To DO
 
 Add handler for errors related to auth and replies from API
 
