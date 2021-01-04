@@ -17,13 +17,18 @@
     After certificate successfully imported Cluster will restart Prism UI services to apply new certificates. 
  
 .disclaimer
-    This code is intended as a standalone example. Subject to licensing restrictions defined on nutanix.dev, this can be downloaded, 
+    This code is intended as a standalone example. This can be downloaded, 
     copied and/or modified in any way you see fit.
  
-    Please be aware that all public code samples provided by Nutanix are unofficial in nature, are provided as examples only, 
-    are unsupported and will need to be heavily scrutinized and potentially modified before they can be used in a production environment. All such code samples are provided on an as-is basis, and Nutanix expressly disclaims all warranties, express or implied.
+    Please be aware that all public code samples provided by Artem are unofficial in nature, are provided as examples only, 
+    are unsupported and will need to be heavily scrutinized and potentially modified before they can be used in a production environment. All such code samples are provided on an as-is basis, and Artem expressly disclaims all warranties, express or implied.
   
+<<<<<<< HEAD
     All code samples are © Nutanix, Inc., and are provided as-is under the MIT license. (https://opensource.org/licenses/MIT)
+=======
+    All code samples are provided as-is under the MIT license. (https://opensource.org/licenses/MIT)
+
+>>>>>>> e5d9d41069b639b64d41a04f717bfeb73b9b9c0e
 '''
 import sys
 import os
