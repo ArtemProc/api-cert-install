@@ -9,6 +9,8 @@ This script is example of REST API call way to import SSL Certificate for Prism 
 Python 3
 requests
 urllib3
+argparser
+pyOpenSSL
 ```
 ## How to use
 
