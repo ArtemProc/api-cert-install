@@ -2,12 +2,14 @@
 '''
 .notes
     Filename: api-cert-import.py
-    Script version: 1.0.0
+    Script version: 1.0.1
  
 .prerequisites
     Python 3
     requests
     urllib3
+    argparser
+    pyOpenSSL
  
 .overview
  
