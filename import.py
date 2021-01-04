@@ -24,7 +24,6 @@
     are unsupported and will need to be heavily scrutinized and potentially modified before they can be used in a production environment. All such code samples are provided on an as-is basis, and Nutanix expressly disclaims all warranties, express or implied.
   
     All code samples are © Nutanix, Inc., and are provided as-is under the MIT license. (https://opensource.org/licenses/MIT)
-
 '''
 import sys
 import os
@@ -32,7 +31,9 @@ import getopt
 import urllib3.request
 import binascii
 import getpass
+import argparse
 import requests
+from OpenSSL import crypto
 from requests.auth import HTTPBasicAuth
 from urllib3 import disable_warnings
 from urllib3.exceptions import InsecureRequestWarning
@@ -65,7 +66,7 @@ def usage():
     print('import.py -k <private-key> -t <key-type> -p <public-cert> -c <ca-chain> -i <prism-ip-or-fqdn> -u <username-with-cluster-admin-mapping>')
     print('Type format names are:\nRSA_2048\nECDSA_256\nECDSA_384\nECDSA_521')
 
-def main(argv):
+def main():
 
     private_key = ''
     public_cert = ''
@@ -73,43 +74,40 @@ def main(argv):
     key_type = ''
     prism_ip = ''
     user = ''
+    parser = argparse.ArgumentParser(description='''Script is to provide an example how to import SSL Certificate for Prism Element and Prism Central automatically.''',
+    usage='''To import certificate please use following format.\n
+    import.py -k <private-key> -t <key-type> -p <public-cert> -c <ca-chain> -i <prism-ip-or-fqdn> -u <username-with-cluster-admin-mapping>\n
+    Type format names are:\nRSA_2048\nECDSA_256\nECDSA_384\nECDSA_521'''
+    )
+    parser.add_argument('-k','--private_key',type=str, help='Path to private key file', required=True)
+    parser.add_argument('-p','--public_cert',type=str, help='Path to server certificate file', required=True)
+    parser.add_argument('-c','--ca_chain',type=str, help='Path to CA Chain file', required=True)
+    parser.add_argument('-t','--key_type',type=str, help='Server key algorithm', required=True)
+    parser.add_argument('-i','--ip',type=str, help='Server ip or FQDN', required=True)
+    parser.add_argument('-u','--user',type=str, help='User with Cluster Admin Role Mapping', required=True)
+    args = parser.parse_args()
+    private_key = open(args.private_key, 'r').read()
+    public_cert = open(args.public_cert, 'r').read()
+    ca_chain = open(args.ca_chain, 'r').read()
+    key_type = args.key_type
+    prism_ip = args.ip
+    user = user
 
     try:
-        opts, args = getopt.getopt(argv,
-        "k:t:p:c:i:u:",
-        ["private-key=","key-type=","public-cert=","ca-chain=","ip=","user="])
-    except getopt.GetoptError:
-        usage()
-        sys.exit(2)
-    
-    if not opts or len(argv) < 12:
-        usage()
-        sys.exit(2)
-    
-    for opt, arg in opts:
-        if opt in ('-k', '--private-key'):
-            print(arg)
-            private_key = open(arg,"r").read()            
-        elif opt in ('-p', '--public-cert'):
-            print(arg)
-            public_cert = open(arg,"r").read()            
-        elif opt in ('-c', '--ca-chain'):
-            print(arg)
-            ca_chain = open(arg,"r").read()
-        elif opt in ('-t', '--key-type'):
-            print(arg)
-            key_type = arg
-        elif opt in ('-i', '--ip'):
-            print(arg)
-            prism_ip = arg
-        elif opt in ('-u', '--user'):
-            print(arg)
-            user = arg
-            
-    request_payload = encode_multipart_formdata({"keyType": key_type,"key": private_key, "cert": public_cert, "caChain": ca_chain})
-    print(request_payload[0])
+        store = crypto.X509Store()
+        certificate = crypto.load_certificate(crypto.FILETYPE_PEM, public_cert)
+        ca_certificate = crypto.load_certificate(crypto.FILETYPE_PEM, ca_chain)
+        store.add_cert(ca_certificate)
+        store_ctx = crypto.X509StoreContext(store, certificate)
+        store_ctx.verify_certificate()
+    except Exception as e:
+        print(e)
+        sys.exit(1)
 
+
+    request_payload = encode_multipart_formdata({"keyType": key_type,"key": private_key, "cert": public_cert, "caChain": ca_chain})
+    
     print(make_request(prism_ip,user,request_payload))
 
 if __name__ == "__main__":
-   main(sys.argv[1:])
+   main()
