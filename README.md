@@ -3,6 +3,7 @@
 ## Introduction
 
 This script is example of REST API call way to import SSL Certificate for Prism Element/Prism Central web interface.
+Script has verification of Signed certificate to CA file provided.
 
 ## Requirements
 ```
